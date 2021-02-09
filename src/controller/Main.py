@@ -1,17 +1,18 @@
 import sys
+import time
 
 from prettytable import PrettyTable
 
-from CovidRecord import process_as_date, CovidRecord
-from Display import Display
-from FileUtiles import FileUtils
+from model.CovidRecordDTO import process_as_date, CovidRecord
+from view.Display import Display
+from model.FileUtiles import FileUtils
 
 
 class Main:
     def __init__(self):
         self.display = None
-        self.filename = "covid19-download.csv"
-        self.filename_write = "covid19-new.csv"
+        self.filename = "../../data/covid19-download.csv"
+        self.filename_write = "../../data/covid19-new.csv"
         self.covidRecord = []
 
     def start(self):
@@ -21,8 +22,13 @@ class Main:
         self.logic(self.get_user_input("Your input: "))
 
     @staticmethod
-    def get_user_input(x):
-        return int(input(x))
+    def get_user_input(msg):
+        u_input = input(msg)
+        if u_input.isnumeric():
+            return int(u_input)
+        else:
+            print("Input must be a numeric value.")
+            return Main.get_user_input(msg)
 
     def logic(self, users_input=None):
         file_utils = FileUtils()
@@ -42,6 +48,8 @@ class Main:
                 ctr += 1
 
             print(t)
+            self.display.print_headline()
+
             self.display.print_menu()
             self.logic(self.get_user_input("Your input: "))
 
@@ -54,40 +62,55 @@ class Main:
             except IOError:
                 print("Something went wrong while updating records\n")
 
+            self.display.print_headline()
             self.display.print_menu()
+
             self.logic(self.get_user_input("Your input: "))
 
         # Create new CSV file
         elif users_input == 3:
-            x = self.get_user_input("Are you sure you want to create a new file? \n"
-                                    "If yes enter 1: ")
-            if x == 1:
-                file_utils.write_content(self.filename_write, self.covidRecord)
-                print("File created successfully!\n")
 
+            if len(self.covidRecord) < 1:
+                print("No records found. Please load data.")
+                time.sleep(3)
             else:
-                print("File creation aborted!\n")
+                x = self.get_user_input("Are you sure you want to create a new file? \n"
+                                        "If yes enter 1: ")
+                if x == 1:
+                    file_utils.write_content(self.filename_write, self.covidRecord)
+                    print("File created successfully!\n")
 
+                else:
+                    print("File creation aborted!\n")
+
+            self.display.print_headline()
             self.display.print_menu()
+
             self.logic(self.get_user_input("Your input: "))
 
         #  Display selected records
         elif users_input == 4:
 
-            row_number = self.get_user_input("Please enter row number: ")
+            if len(self.covidRecord) < 1:
+                print("No records found. Please load data.")
+                time.sleep(3)
 
-            while row_number > len(self.covidRecord):
-                row_number = self.get_user_input("Record does not exist. Please re-enter: ")
+            else:
+                row_number = self.get_user_input("Please enter row number: ")
+                while row_number > len(self.covidRecord) and row_number > 0:
+                    row_number = self.get_user_input("Record does not exist. Please re-enter: ")
 
-            selected = self.covidRecord[row_number - 1]
-            t = PrettyTable(
-                ["pruid", "prname", "prname_fr", "date", "numconf", "numprob", "numdeaths", "numtotal", "numtoday",
-                 "ratetotal"])
-            t.add_row([selected.pruid, selected.prname, selected.prname_fr, selected.date.strftime("%b %d %Y"),
-                       selected.numconf, selected.numprob,
-                       selected.numdeaths, selected.numtotal, selected.numtoday, selected.ratetotal])
+                selected = self.covidRecord[row_number - 1]
+                t = PrettyTable(
+                    ["pruid", "prname", "prname_fr", "date", "numconf", "numprob", "numdeaths", "numtotal", "numtoday",
+                     "ratetotal"])
+                t.add_row([selected.pruid, selected.prname, selected.prname_fr, selected.date.strftime("%b %d %Y"),
+                           selected.numconf, selected.numprob,
+                           selected.numdeaths, selected.numtotal, selected.numtoday, selected.ratetotal])
 
-            print(t)
+                print(t)
+            self.display.print_headline()
+
             self.display.print_menu()
             self.logic(self.get_user_input("Your input: "))
 
@@ -97,7 +120,7 @@ class Main:
             pruid = self.get_user_input("pruid: ")
             prname = input("prname: ")
             prname_fr = input("prname_fr: ")
-            date = input("date: ")
+            date = input("date(mm/dd/yyyy): ")
             numconf = self.get_user_input("numconf: ")
             numprob = self.get_user_input("numprob: ")
             numdeaths = self.get_user_input("numdeaths: ")
@@ -121,6 +144,7 @@ class Main:
             self.covidRecord.append(new_record)
 
             print("Record created successfully")
+            self.display.print_headline()
             self.display.print_menu()
             self.logic(self.get_user_input("Your input:"))
 
@@ -165,7 +189,7 @@ class Main:
             )
 
             self.covidRecord[x] = new_record
-
+            self.display.print_headline()
             self.display.print_menu()
             self.logic(self.get_user_input("Your input: "))
 
@@ -191,6 +215,7 @@ class Main:
                         [rec.date.strftime("%b %d %Y"), rec.numconf, rec.numprob, rec.numdeaths, rec.numtotal,
                          rec.numtoday, rec.ratetotal])
                     print(t)
+            self.display.print_headline()
             self.display.print_menu()
             self.logic(self.get_user_input("Your input:"))
 
@@ -207,9 +232,10 @@ class Main:
                     t.add_row(
                         [rec.pruid, rec.prname, rec.prname_fr, rec.numconf, rec.numprob, rec.numdeaths, rec.numtotal,
                          rec.numtoday, rec.ratetotal])
-                    print(t)
-                    self.display.print_menu()
-                    self.logic(self.get_user_input("Your input:"))
+            print(t)
+            self.display.print_headline()
+            self.display.print_menu()
+            self.logic(self.get_user_input("Your input:"))
 
         # Exit
         else:

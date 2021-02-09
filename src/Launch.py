@@ -1,4 +1,4 @@
-from Main import Main
+from controller.Main import Main
 
 # application entry point
 if __name__ == "__main__":

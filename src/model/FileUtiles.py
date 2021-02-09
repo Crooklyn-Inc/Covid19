@@ -1,13 +1,13 @@
 import csv
 import sys
 
-from CovidRecord import CovidRecord, process_as_date
+from model.CovidRecordDTO import CovidRecord, process_as_date
 
 
 # file reader class to read from csv document
 class FileUtils:
-    @staticmethod
-    def _open_file(filename):
+
+    def _open_file(self, filename):
         covidRecord = []
         ctr = 0
         try:
@@ -38,8 +38,7 @@ class FileUtils:
             print("File is unavailable or missing ")
             sys.exit()
 
-    @staticmethod
-    def _write_file(filename, covid_record, ):
+    def _write_file(self, filename, covid_record):
         with open(filename, 'w+', newline='') as file:
             writer = csv.writer(file)
 
@@ -52,7 +51,7 @@ class FileUtils:
                      record.numdeaths, record.numtotal, record.numtoday, record.ratetotal])
 
     def get_content(self, filename=None):
-        return self._open_file(filename)
+        return self._open_file("Covid19/data/" + filename)
 
     def write_content(self, filename=None, covid_record=None):
-        return self._write_file(filename, covid_record)
+        return self._write_file("Covid19/data/" + filename, covid_record)

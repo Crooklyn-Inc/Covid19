@@ -8,6 +8,7 @@ class Display:
 
     @staticmethod
     def print_menu():
+        print("\n")
         print("Please select:")
         print("1.Print all records ")
         print("2.Load/Reload data from file ")
