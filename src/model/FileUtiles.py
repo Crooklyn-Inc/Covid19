@@ -1,5 +1,8 @@
 import csv
 import sys
+import time
+import threading
+from multiprocessing import Pool
 
 from model.CovidRecordDTO import CovidRecord, process_as_date
 
@@ -8,6 +11,9 @@ from model.CovidRecordDTO import CovidRecord, process_as_date
 class FileUtils:
 
     def _open_file(self, filename):
+
+        start = time.perf_counter()
+
         covidRecord = []
         ctr = 0
         try:
@@ -29,14 +35,20 @@ class FileUtils:
                     )
                     covidRecord.append(record)
                     # simple counter to read 'n' number of records
-                    ctr += 1
-                    if ctr >= 10:
-                        break
+                    # ctr += 1
+                    # if ctr >= 10:
+                    #     break
+
+            finish = time.perf_counter()
+
+            print(finish - start)
 
             return covidRecord
         except IOError:
             print("File is unavailable or missing ")
             sys.exit()
+
+
 
     def _write_file(self, filename, covid_record):
         with open(filename, 'w+', newline='') as file:

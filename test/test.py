@@ -1,6 +1,7 @@
 import pytest
 from model.CovidRecordDTO import CovidRecord
 import model.FileUtiles
+import controller.Main
 
 
 class TestApp:
@@ -21,3 +22,6 @@ class TestApp:
         assert len(test) == 2
         assert test[0] == self.rec
         assert test[1] == self.rec
+
+
+

@@ -1,4 +1,5 @@
 pruid,prname,prname_fr,date,numconf,numprob,numdeaths,numtotal,numtoday,ratetotal
+35,Ontario,Ontario,Jan 31 2020,3,0,0,3,3,0.02
 59,British Columbia,Colombie-Britannique,Jan 31 2020,1,0,0,1,1,0.02
 1,Canada,Canada,Jan 31 2020,4,0,0,4,4,0.01
 35,Ontario,Ontario,Feb 08 2020,3,0,0,3,0,0.02
@@ -8,4 +9,3 @@ pruid,prname,prname_fr,date,numconf,numprob,numdeaths,numtotal,numtoday,ratetota
 59,British Columbia,Colombie-Britannique,Feb 16 2020,5,0,0,5,1,0.1
 1,Canada,Canada,Feb 16 2020,8,0,0,8,1,0.02
 35,Ontario,Ontario,Feb 21 2020,3,0,0,3,0,0.02
-35,Ontario,Ontario,Feb 09 2021,1,1,1,1,1,1
