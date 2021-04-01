@@ -19,4 +19,7 @@ class Display:
         print("7.Delete record ")
         print("8.Information by province")
         print("9.Information by date")
+        print("10.Information by date and province")
+        print("11.Information province and deaths")
+
         print("0.Exit")

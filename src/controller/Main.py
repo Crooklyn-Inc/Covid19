@@ -79,6 +79,14 @@ class Main:
             self.information_by_date()
             self.start()
 
+        elif users_input == 10:
+            self.information_by_date_and_province()
+            self.start()
+
+        elif users_input == 11:
+            self.information_by_number_of_deaths_by_region()
+            self.start()
+
         # Exit
         else:
             print("Goodbye!")
@@ -230,7 +238,7 @@ class Main:
         print(t)
 
     def information_by_date(self):
-        date = process_as_date(input("\nPlease enter a date (Jan 1, 2020 to Jan 9, 2021)(mm/dd/yyyy): "))
+        date = process_as_date(input("\nPlease enter a date (Jan 1, 2020 to Jan 9, 2021)(mm/dd/yyyy): "), False)
         t = PrettyTable(
             ["pruid", "prname", "prname_fr", "numconf", "numprob", "numdeaths", "numtotal", "numtoday",
              "ratetotal"])
@@ -240,4 +248,43 @@ class Main:
                 t.add_row(
                     [rec.pruid, rec.prname, rec.prname_fr, rec.numconf, rec.numprob, rec.numdeaths, rec.numtotal,
                      rec.numtoday, rec.ratetotal])
+        print(t)
+
+    def information_by_date_and_province(self):
+        province = input("\nPlease enter province name or \"Canada\" for the whole country: ")
+        date = process_as_date(input("\nPlease enter a date (Jan 2020 to Jan 2021)(mm/yyyy): "), True)
+        t = PrettyTable(
+            ["date", "pruid", "prname", "prname_fr", "numconf", "numprob", "numdeaths", "numtotal", "numtoday",
+             "ratetotal"])
+
+        for rec in self.covidRecord:
+            if rec.date.month == date.month and rec.prname.lower() == province.lower():
+                t.add_row(
+                    [rec.date.strftime("%b %d %Y"), rec.pruid, rec.prname, rec.prname_fr, rec.numconf, rec.numprob,
+                     rec.numdeaths, rec.numtotal, rec.numtoday, rec.ratetotal])
+        print(t)
+
+    # this method will return record with a maximum number of deaths by selected province
+    def information_by_number_of_deaths_by_region(self):
+        province = input("\nPlease enter province name or \"Canada\" for the whole country: ")
+        t = PrettyTable(
+            ["date", "pruid", "prname", "prname_fr", "numconf", "numprob", "numdeaths", "numtotal", "numtoday",
+             "ratetotal"])
+
+        num_of_death = 0
+
+        result = []
+
+        for rec in self.covidRecord:
+            if rec.prname.lower() == province.lower():
+                if int(rec.numdeaths) > num_of_death:
+                    self.num_of_death = rec.numdeaths
+                    result.clear()
+                    result.append(rec)
+
+        t.add_row(
+            [result[0].date.strftime("%b %d %Y"), result[0].pruid, result[0].prname, result[0].prname_fr,
+             result[0].numconf,
+             result[0].numprob,
+             result[0].numdeaths, result[0].numtotal, result[0].numtoday, result[0].ratetotal])
         print(t)

@@ -1,20 +1,16 @@
 import csv
 import sys
-import time
-import threading
-from multiprocessing import Pool
+from threading import Thread
 
 from model.CovidRecordDTO import CovidRecord, process_as_date
 
 
 # file reader class to read from csv document
 class FileUtils:
+    covidRecord = []
 
     def _open_file(self, filename):
 
-        start = time.perf_counter()
-
-        covidRecord = []
         ctr = 0
         try:
             with open(filename, mode='r') as csv_file:
@@ -25,7 +21,7 @@ class FileUtils:
                         line.get("pruid"),
                         line.get("prname"),
                         line.get("prnameFR"),
-                        process_as_date(line.get("date")),
+                        process_as_date(line.get("date"), False),
                         line.get("numconf"),
                         line.get("numprob"),
                         line.get("numdeaths"),
@@ -33,22 +29,16 @@ class FileUtils:
                         line.get("numtoday"),
                         line.get("ratetotal")
                     )
-                    covidRecord.append(record)
+                    self.covidRecord.append(record)
                     # simple counter to read 'n' number of records
                     # ctr += 1
                     # if ctr >= 10:
                     #     break
 
-            finish = time.perf_counter()
-
-            print(finish - start)
-
-            return covidRecord
+            return self.covidRecord
         except IOError:
             print("File is unavailable or missing ")
             sys.exit()
-
-
 
     def _write_file(self, filename, covid_record):
         with open(filename, 'w+', newline='') as file:
@@ -63,7 +53,14 @@ class FileUtils:
                      record.numdeaths, record.numtotal, record.numtoday, record.ratetotal])
 
     def get_content(self, filename=None):
-        return self._open_file("Covid19/data/" + filename)
+        thread = Thread(target=self._open_file, args=("Covid19/data/" + filename,))
+        thread.name = "Thread to read"
+        thread.start()
+        thread.join()
+        return self.covidRecord
 
     def write_content(self, filename=None, covid_record=None):
-        return self._write_file("Covid19/data/" + filename, covid_record)
+        thread = Thread(target=self._write_file, args=("Covid19/data/" + filename, covid_record,))
+        thread.name = "Thread to write"
+        thread.start()
+        thread.join()

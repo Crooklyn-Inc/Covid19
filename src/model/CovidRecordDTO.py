@@ -17,6 +17,10 @@ class CovidRecord:
 
 
 # function to covert string to datetime object
-def process_as_date(date_string):
-    x = [int(numeric_string) for numeric_string in date_string.split("/")]
-    return datetime.datetime(x[2], x[0], x[1])
+def process_as_date(date_string, is_month_only):
+    if is_month_only:
+        x = [int(numeric_string) for numeric_string in date_string.split("/")]
+        return datetime.datetime(year=x[1], month=x[0], day=1)
+    else:
+        x = [int(numeric_string) for numeric_string in date_string.split("/")]
+        return datetime.datetime(x[2], x[0], x[1])
